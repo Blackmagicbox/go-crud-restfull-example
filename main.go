@@ -1,9 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
+	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
@@ -15,7 +14,7 @@ type Product struct {
 
 type Products []Product
 
-func allProducts(w http.ResponseWriter, r *http.Request) {
+func allProducts(c *gin.Context) {
 	products := Products{
 		Product{
 			Id:    0,
@@ -25,17 +24,18 @@ func allProducts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("Products Endpoint hit")
-	json.NewEncoder(w).Encode(products)
+	c.JSON(http.StatusOK, products)
 }
 
-func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Homepage Endpoint hit")
+func homePage(c *gin.Context) {
+	c.String(http.StatusOK, "Greetings")
 }
 
 func handleRequest() {
-	http.HandleFunc("/", homePage)
-	http.HandleFunc("/products", allProducts)
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	router := gin.Default()
+	router.GET("/", homePage)
+	router.GET("/products", allProducts)
+	router.Run(":8081")
 }
 
 func main() {
