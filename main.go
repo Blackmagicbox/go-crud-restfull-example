@@ -15,6 +15,8 @@ type Product struct {
 
 type Products []Product
 
+var productsList = listProducts()
+
 func listProducts() Products {
 	products := Products{
 		Product{
@@ -32,9 +34,8 @@ func listProducts() Products {
 }
 
 func allProducts(c *gin.Context) {
-
 	fmt.Println("Products Endpoint hit")
-	c.JSON(http.StatusOK, listProducts())
+	c.JSON(http.StatusOK, productsList)
 }
 
 func homePage(c *gin.Context) {
@@ -46,13 +47,29 @@ func handleRequest() {
 	router.GET("/", homePage)
 	router.GET("/products", allProducts)
 	router.GET("/products/:id", getProduct)
-	router.Run(":8081")
+	router.POST("/products", addProduct)
+	_ = router.Run(":8081")
+}
+
+func addProduct(c *gin.Context) {
+
+	var product Product
+	_ = c.BindJSON(&product)
+
+	productsList = append(productsList, product)
+	c.JSON(http.StatusOK, gin.H{
+		"id": product.Id,
+		"price": product.Price,
+		"name": product.Name,
+	})
+
+
 }
 
 func getProduct(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Params.ByName("id"))
 
-	products := listProducts()
+	products := productsList
 	for _, product := range products {
 		if product.Id == id {
 			c.JSON(http.StatusOK, product)
