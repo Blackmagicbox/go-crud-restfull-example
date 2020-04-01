@@ -53,13 +53,15 @@ func handleRequest() {
 
 func addProduct(c *gin.Context) {
 
-	var product Product
+	var (
+		product Product
+	)
 	_ = c.BindJSON(&product)
 
 	productsList = append(productsList, product)
 	c.JSON(http.StatusOK, gin.H{
-		"id": product.Id,
 		"price": product.Price,
+		"id": product.Id,
 		"name": product.Name,
 	})
 
