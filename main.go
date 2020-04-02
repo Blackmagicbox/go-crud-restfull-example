@@ -33,22 +33,13 @@ func listProducts() Products {
 	return products
 }
 
-func allProducts(c *gin.Context) {
-	fmt.Println("Products Endpoint hit")
-	c.JSON(http.StatusOK, productsList)
-}
-
 func homePage(c *gin.Context) {
 	c.String(http.StatusOK, "Greetings")
 }
 
-func handleRequest() {
-	router := gin.Default()
-	router.GET("/", homePage)
-	router.GET("/products", allProducts)
-	router.GET("/products/:id", getProduct)
-	router.POST("/products", addProduct)
-	_ = router.Run(":8081")
+func allProducts(c *gin.Context) {
+	fmt.Println("Products Endpoint hit")
+	c.JSON(http.StatusOK, productsList)
 }
 
 func addProduct(c *gin.Context) {
@@ -61,10 +52,9 @@ func addProduct(c *gin.Context) {
 	productsList = append(productsList, product)
 	c.JSON(http.StatusOK, gin.H{
 		"price": product.Price,
-		"id": product.Id,
-		"name": product.Name,
+		"id":    product.Id,
+		"name":  product.Name,
 	})
-
 
 }
 
@@ -79,6 +69,15 @@ func getProduct(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusBadRequest, Products{})
+}
+
+func handleRequest() {
+	router := gin.Default()
+	router.GET("/", homePage)
+	router.GET("/products", allProducts)
+	router.GET("/products/:id", getProduct)
+	router.POST("/products", addProduct)
+	_ = router.Run(":8081")
 }
 
 func main() {
