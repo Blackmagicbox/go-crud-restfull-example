@@ -71,12 +71,32 @@ func getProduct(c *gin.Context) {
 	c.JSON(http.StatusBadRequest, Products{})
 }
 
+
+func updateProduct(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Params.ByName("id"))
+	var newProduct Product
+	_ = c.BindJSON(&newProduct)
+	products := productsList
+	for i, product := range products {
+		if products[i].Id == id {
+			products[i].Name = newProduct.Name
+			products[i].Price = newProduct.Price
+			c.JSON(http.StatusOK, product)
+			return
+		}
+	}
+	c.JSON(http.StatusNotFound, Products{})
+
+}
+
+
 func handleRequest() {
 	router := gin.Default()
 	router.GET("/", homePage)
 	router.GET("/products", allProducts)
 	router.GET("/products/:id", getProduct)
 	router.POST("/products", addProduct)
+	router.PUT("/products/:id", updateProduct)
 	_ = router.Run(":8081")
 }
 
