@@ -6,4 +6,5 @@ type MagicCard struct {
 	Description string `json:"description"`
 	Collection string `json:"collection"`
 	Cost [3]int `json:"cost"`
+	Quantity int `json:"quantity"`
 }
