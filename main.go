@@ -97,7 +97,12 @@ func handleRequest() {
 	router.GET("/products/:id", getProduct)
 	router.POST("/products", addProduct)
 	router.PUT("/products/:id", updateProduct)
+	router.GET("/cards", allCards)
 	_ = router.Run(":8081")
+}
+
+func allCards(c *gin.Context) {
+	c.String(http.StatusOK, "Soon there will be cards")
 }
 
 func main() {
